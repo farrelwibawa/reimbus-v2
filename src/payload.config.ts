@@ -51,8 +51,8 @@ export default buildConfig({
       host: 'smtp-relay.brevo.com',   // Server SMTP Brevo
       port: 587,                       // Port standar SMTP
       auth: {
-        user: process.env.SMTP_USER || 'aa1f00001@smtp-brevo.com',
-        pass: process.env.SMTP_PASS || '',
+        user: process.env.BREVO_USER || 'aa1f00001@smtp-brevo.com',
+        pass: process.env.BREVO_API_KEY || '',
       },
     },
   }),
