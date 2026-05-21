@@ -63,12 +63,13 @@ export type SupportedTimezones =
 
 export interface Config {
   auth: {
-    users: UserAuthOperations;
+    employees: EmployeeAuthOperations;
   };
   blocks: {};
   collections: {
-    users: User;
+    employees: Employee;
     media: Media;
+    reimbursements: Reimbursement;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -76,8 +77,9 @@ export interface Config {
   };
   collectionsJoins: {};
   collectionsSelect: {
-    users: UsersSelect<false> | UsersSelect<true>;
+    employees: EmployeesSelect<false> | EmployeesSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    reimbursements: ReimbursementsSelect<false> | ReimbursementsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -93,13 +95,13 @@ export interface Config {
   widgets: {
     collections: CollectionsWidget;
   };
-  user: User;
+  user: Employee;
   jobs: {
     tasks: unknown;
     workflows: unknown;
   };
 }
-export interface UserAuthOperations {
+export interface EmployeeAuthOperations {
   forgotPassword: {
     email: string;
     password: string;
@@ -119,10 +121,12 @@ export interface UserAuthOperations {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "users".
+ * via the `definition` "employees".
  */
-export interface User {
+export interface Employee {
   id: string;
+  name: string;
+  role: 'admin' | 'employee';
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -140,7 +144,7 @@ export interface User {
       }[]
     | null;
   password?: string | null;
-  collection: 'users';
+  collection: 'employees';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -160,6 +164,37 @@ export interface Media {
   height?: number | null;
   focalX?: number | null;
   focalY?: number | null;
+  sizes?: {
+    thumbnail?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+  };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "reimbursements".
+ */
+export interface Reimbursement {
+  id: string;
+  claimCode?: string | null;
+  category: 'software' | 'hardware' | 'transport' | 'pantry' | 'others';
+  itemName: string;
+  description?: string | null;
+  amount: number;
+  receipt: string | Media;
+  status?: ('pending' | 'approved' | 'paid' | 'rejected') | null;
+  /**
+   * Tinggalkan pesan untuk karyawan (wajib jika klaim ditolak).
+   */
+  adminNotes?: string | null;
+  requestedBy?: (string | null) | Employee;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -186,17 +221,21 @@ export interface PayloadLockedDocument {
   id: string;
   document?:
     | ({
-        relationTo: 'users';
-        value: string | User;
+        relationTo: 'employees';
+        value: string | Employee;
       } | null)
     | ({
         relationTo: 'media';
         value: string | Media;
+      } | null)
+    | ({
+        relationTo: 'reimbursements';
+        value: string | Reimbursement;
       } | null);
   globalSlug?: string | null;
   user: {
-    relationTo: 'users';
-    value: string | User;
+    relationTo: 'employees';
+    value: string | Employee;
   };
   updatedAt: string;
   createdAt: string;
@@ -208,8 +247,8 @@ export interface PayloadLockedDocument {
 export interface PayloadPreference {
   id: string;
   user: {
-    relationTo: 'users';
-    value: string | User;
+    relationTo: 'employees';
+    value: string | Employee;
   };
   key?: string | null;
   value?:
@@ -237,9 +276,11 @@ export interface PayloadMigration {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "users_select".
+ * via the `definition` "employees_select".
  */
-export interface UsersSelect<T extends boolean = true> {
+export interface EmployeesSelect<T extends boolean = true> {
+  name?: T;
+  role?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -274,6 +315,37 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+  sizes?:
+    | T
+    | {
+        thumbnail?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+      };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "reimbursements_select".
+ */
+export interface ReimbursementsSelect<T extends boolean = true> {
+  claimCode?: T;
+  category?: T;
+  itemName?: T;
+  description?: T;
+  amount?: T;
+  receipt?: T;
+  status?: T;
+  adminNotes?: T;
+  requestedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
