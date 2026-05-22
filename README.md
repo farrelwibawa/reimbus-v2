@@ -49,6 +49,11 @@ Versi 2 membawa perubahan masif secara fundamental dibandingkan pendahulunya, di
 
 ---
 
+## 📁 Dokumentasi Revisi
+Seluruh catatan perjalanan pengembangan (changelog), proses migrasi dari V1 ke V2, serta rincian *refactoring* kode tersimpan rapi di dalam folder **`DOKUM REVISI/`**. Folder ini berisi dokumen Markdown yang merangkum setiap tahap penyempurnaan aplikasi.
+
+---
+
 ## 📈 Status Repositori: ACTIVE (STABLE)
 > Proyek ini adalah versi paling optimal dan stabil saat ini, siap untuk digunakan sebagai basis pengembangan fitur lanjutan.
 
