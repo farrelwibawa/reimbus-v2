@@ -66,7 +66,7 @@ export default function EditForm({ klaim }: { klaim: any }) {
     }
   }
 
-  const inputClass = "px-4 py-3 bg-slate-950 border border-slate-700 rounded-lg text-slate-50 font-sans text-[15px] transition-all duration-200 focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 placeholder:text-slate-500 w-full"
+  const inputClass = "px-4 py-3 bg-slate-950 border border-slate-700 rounded-lg text-slate-50 font-sans text-[15px] transition-all duration-300 focus:outline-none focus:border-blue-400 focus:ring-[3px] focus:ring-blue-500/20 shadow-inner w-full placeholder:text-slate-500"
 
   return (
     <div className="max-w-[600px] mx-auto my-5 md:my-10 p-5 md:p-[30px] bg-slate-900 rounded-2xl border border-slate-800 shadow-[0_4px_30px_rgba(0,0,0,0.3)]">
@@ -181,7 +181,7 @@ export default function EditForm({ klaim }: { klaim: any }) {
         <button 
           type="submit" 
           disabled={loading || !!success} 
-          className="bg-blue-500 text-white p-3.5 border-none rounded-lg font-semibold text-[15px] cursor-pointer mt-2.5 transition-all duration-200 shadow-[0_4px_14px_rgba(59,130,246,0.39)] hover:-translate-y-[2px] hover:bg-blue-600 hover:shadow-[0_6px_20px_rgba(59,130,246,0.4)] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
+          className="bg-gradient-to-r from-blue-600 to-blue-500 text-white p-3.5 border-none rounded-lg font-semibold text-[15px] cursor-pointer mt-2.5 transition-all duration-200 shadow-[0_4px_14px_rgba(59,130,246,0.39)] hover:-translate-y-[2px] hover:shadow-[0_6px_20px_rgba(59,130,246,0.5)] active:scale-95 active:shadow-none disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
         >
           {loading ? 'Menyimpan Perubahan...' : 'Simpan Perubahan'}
         </button>

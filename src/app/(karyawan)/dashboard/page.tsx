@@ -64,7 +64,7 @@ export default async function EmployeeDashboard(props: { searchParams: Promise<{
             <p className="text-slate-400 m-0 text-sm md:text-base">Kelola dan pantau seluruh pengajuan klaim pengeluaran Anda di satu tempat.</p>
           </div>
           {/* Tombol Ajukan Klaim Baru */}
-          <Link href="/dashboard/new" className="w-full md:w-auto text-center box-border px-7 py-3.5 bg-blue-500 text-white no-underline rounded-lg font-semibold text-[15px] transition-all duration-200 shadow-[0_4px_14px_rgba(59,130,246,0.39)] hover:bg-blue-600 hover:-translate-y-[2px] hover:shadow-[0_6px_20px_rgba(59,130,246,0.4)]">
+          <Link href="/dashboard/new" className="w-full md:w-auto text-center box-border px-7 py-3.5 bg-gradient-to-r from-blue-600 to-blue-500 text-white no-underline rounded-lg font-semibold text-[15px] transition-all duration-300 shadow-[0_4px_14px_rgba(59,130,246,0.39)] hover:-translate-y-[2px] hover:shadow-[0_6px_20px_rgba(59,130,246,0.5)] active:scale-95">
             + Ajukan Klaim
           </Link>
         </div>
@@ -72,7 +72,7 @@ export default async function EmployeeDashboard(props: { searchParams: Promise<{
         {/* 📊 SEKSI 1: KARTU RINGKASAN STATISTIK (SUMMARY CARDS) */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5 mb-[30px]">
           {/* Kartu Status Pending */}
-          <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 md:p-6 flex flex-col md:flex-row items-center gap-2.5 md:gap-5 shadow-[0_4px_20px_rgba(0,0,0,0.2)] transition-all duration-200 hover:-translate-y-[2px] hover:border-blue-500 text-center md:text-left">
+          <div className="bg-slate-900/80 backdrop-blur-sm border border-slate-800 rounded-xl p-4 md:p-6 flex flex-col md:flex-row items-center gap-2.5 md:gap-5 shadow-[0_4px_20px_rgba(0,0,0,0.2)] transition-all duration-300 hover:scale-[1.02] hover:-translate-y-[2px] hover:shadow-[0_8px_30px_rgba(59,130,246,0.15)] hover:border-blue-500 text-center md:text-left">
             <div className="text-[18px] md:text-[28px] w-9 h-9 md:w-14 md:h-14 flex items-center justify-center bg-slate-800/50 border border-slate-700 rounded-xl">
               <svg color="#fbbf24" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
             </div>
@@ -82,7 +82,7 @@ export default async function EmployeeDashboard(props: { searchParams: Promise<{
             </div>
           </div>
           {/* Kartu Status Approved */}
-          <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 md:p-6 flex flex-col md:flex-row items-center gap-2.5 md:gap-5 shadow-[0_4px_20px_rgba(0,0,0,0.2)] transition-all duration-200 hover:-translate-y-[2px] hover:border-emerald-500 text-center md:text-left">
+          <div className="bg-slate-900/80 backdrop-blur-sm border border-slate-800 rounded-xl p-4 md:p-6 flex flex-col md:flex-row items-center gap-2.5 md:gap-5 shadow-[0_4px_20px_rgba(0,0,0,0.2)] transition-all duration-300 hover:scale-[1.02] hover:-translate-y-[2px] hover:shadow-[0_8px_30px_rgba(16,185,129,0.15)] hover:border-emerald-500 text-center md:text-left">
             <div className="text-[18px] md:text-[28px] w-9 h-9 md:w-14 md:h-14 flex items-center justify-center bg-slate-800/50 border border-slate-700 rounded-xl">
               <svg color="#34d399" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
             </div>
@@ -92,7 +92,7 @@ export default async function EmployeeDashboard(props: { searchParams: Promise<{
             </div>
           </div>
           {/* Kartu Status Paid (Lunas) */}
-          <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 md:p-6 flex flex-col md:flex-row items-center gap-2.5 md:gap-5 shadow-[0_4px_20px_rgba(0,0,0,0.2)] transition-all duration-200 hover:-translate-y-[2px] hover:border-blue-500 text-center md:text-left">
+          <div className="bg-slate-900/80 backdrop-blur-sm border border-slate-800 rounded-xl p-4 md:p-6 flex flex-col md:flex-row items-center gap-2.5 md:gap-5 shadow-[0_4px_20px_rgba(0,0,0,0.2)] transition-all duration-300 hover:scale-[1.02] hover:-translate-y-[2px] hover:shadow-[0_8px_30px_rgba(59,130,246,0.15)] hover:border-blue-500 text-center md:text-left">
             <div className="text-[18px] md:text-[28px] w-9 h-9 md:w-14 md:h-14 flex items-center justify-center bg-slate-800/50 border border-slate-700 rounded-xl">
               <svg color="#60a5fa" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
             </div>
@@ -102,7 +102,7 @@ export default async function EmployeeDashboard(props: { searchParams: Promise<{
             </div>
           </div>
           {/* Kartu Status Rejected (Ditolak) */}
-          <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 md:p-6 flex flex-col md:flex-row items-center gap-2.5 md:gap-5 shadow-[0_4px_20px_rgba(0,0,0,0.2)] transition-all duration-200 hover:-translate-y-[2px] hover:border-red-500 text-center md:text-left">
+          <div className="bg-slate-900/80 backdrop-blur-sm border border-slate-800 rounded-xl p-4 md:p-6 flex flex-col md:flex-row items-center gap-2.5 md:gap-5 shadow-[0_4px_20px_rgba(0,0,0,0.2)] transition-all duration-300 hover:scale-[1.02] hover:-translate-y-[2px] hover:shadow-[0_8px_30px_rgba(239,68,68,0.15)] hover:border-red-500 text-center md:text-left">
             <div className="text-[18px] md:text-[28px] w-9 h-9 md:w-14 md:h-14 flex items-center justify-center bg-slate-800/50 border border-slate-700 rounded-xl">
               <svg color="#f87171" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
             </div>
@@ -127,13 +127,13 @@ export default async function EmployeeDashboard(props: { searchParams: Promise<{
 
         {/* 📄 SEKSI 3: TABEL DAFTAR KLAIM */}
         <div className="w-full overflow-x-auto rounded-2xl shadow-none md:shadow-[0_4px_30px_rgba(0,0,0,0.3)]">
-          <table className="w-full table-fixed border-separate border-spacing-0 bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden min-w-[650px] text-[13px]">
+          <table className="w-full table-fixed border-separate border-spacing-0 bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden min-w-full md:min-w-[650px] text-[13px]">
             <thead>
               <tr>
                 <th className="px-2.5 md:px-5 py-3 md:py-[18px] border-b border-r border-slate-800 bg-slate-950 text-center text-[11px] md:text-[13px] font-semibold text-slate-400 uppercase tracking-wide last:border-r-0" style={{ width: '16%' }}>Tanggal</th>
                 <th className="px-2.5 md:px-5 py-3 md:py-[18px] border-b border-r border-slate-800 bg-slate-950 text-center text-[11px] md:text-[13px] font-semibold text-slate-400 uppercase tracking-wide last:border-r-0" style={{ width: '36%' }}>Barang</th>
-                <th className="px-2.5 md:px-5 py-3 md:py-[18px] border-b border-r border-slate-800 bg-slate-950 text-center text-[11px] md:text-[13px] font-semibold text-slate-400 uppercase tracking-wide last:border-r-0" style={{ width: '16%' }}>Kategori</th>
-                <th className="px-2.5 md:px-5 py-3 md:py-[18px] border-b border-r border-slate-800 bg-slate-950 text-center text-[11px] md:text-[13px] font-semibold text-slate-400 uppercase tracking-wide last:border-r-0" style={{ width: '16%' }}>Nominal</th>
+                <th className="hidden md:table-cell px-2.5 md:px-5 py-3 md:py-[18px] border-b border-r border-slate-800 bg-slate-950 text-center text-[11px] md:text-[13px] font-semibold text-slate-400 uppercase tracking-wide last:border-r-0" style={{ width: '16%' }}>Kategori</th>
+                <th className="hidden md:table-cell px-2.5 md:px-5 py-3 md:py-[18px] border-b border-r border-slate-800 bg-slate-950 text-center text-[11px] md:text-[13px] font-semibold text-slate-400 uppercase tracking-wide last:border-r-0" style={{ width: '16%' }}>Nominal</th>
                 <th className="px-2.5 md:px-5 py-3 md:py-[18px] border-b border-r border-slate-800 bg-slate-950 text-center text-[11px] md:text-[13px] font-semibold text-slate-400 uppercase tracking-wide last:border-r-0" style={{ width: '16%' }}>Status</th>
               </tr>
             </thead>
@@ -159,7 +159,7 @@ export default async function EmployeeDashboard(props: { searchParams: Promise<{
 
                   return (
                     // Baris tabel interaktif (bisa diklik untuk navigasi detail)
-                    <ClickableRow key={item.id} href={`/dashboard/view/${item.id}`} className="group hover:bg-slate-800 transition-colors duration-200">
+                    <ClickableRow key={item.id} href={`/dashboard/view/${item.id}`} className="group hover:bg-slate-800/80 transition-all duration-300 cursor-pointer active:scale-[0.99]">
                       <td className="px-2.5 md:px-5 py-3 md:py-5 border-b border-r border-slate-800 text-center text-[13px] md:text-[15px] text-slate-300 last:border-r-0 group-last:border-b-0">
                         {new Date(item.createdAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
                         <br/>
@@ -167,9 +167,9 @@ export default async function EmployeeDashboard(props: { searchParams: Promise<{
                           {new Date(item.createdAt).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}
                         </span>
                       </td>
-                      <td className="px-2.5 md:px-5 py-3 md:py-5 border-b border-r border-slate-800 text-center capitalize font-semibold text-slate-50 last:border-r-0 group-last:border-b-0">{item.itemName || '-'}</td>
-                      <td className="px-2.5 md:px-5 py-3 md:py-5 border-b border-r border-slate-800 text-center capitalize font-semibold text-slate-50 last:border-r-0 group-last:border-b-0">{item.category}</td>
-                      <td className="px-2.5 md:px-5 py-3 md:py-5 border-b border-r border-slate-800 text-center text-[13px] md:text-[15px] text-slate-300 last:border-r-0 group-last:border-b-0">{formatRupiah(item.amount)}</td>
+                      <td className="px-2.5 md:px-5 py-3 md:py-5 border-b border-r border-slate-800 text-center capitalize font-semibold text-slate-50 last:border-r-0 group-last:border-b-0 truncate max-w-[120px] md:max-w-none" title={item.itemName}>{item.itemName || '-'}</td>
+                      <td className="hidden md:table-cell px-2.5 md:px-5 py-3 md:py-5 border-b border-r border-slate-800 text-center capitalize font-semibold text-slate-50 last:border-r-0 group-last:border-b-0">{item.category}</td>
+                      <td className="hidden md:table-cell px-2.5 md:px-5 py-3 md:py-5 border-b border-r border-slate-800 text-center text-[13px] md:text-[15px] text-slate-300 last:border-r-0 group-last:border-b-0">{formatRupiah(item.amount)}</td>
                       <td className="px-2.5 md:px-5 py-3 md:py-5 border-b border-r border-slate-800 text-center text-[13px] md:text-[15px] text-slate-300 last:border-r-0 group-last:border-b-0">
                         {/* Badge Status Berwarna Dinamis */}
                         <span className={`px-3.5 py-1.5 rounded-full text-xs font-semibold tracking-wide inline-block ${statusClass}`}>

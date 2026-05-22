@@ -1,5 +1,5 @@
 import React from 'react'
-import './styles.css'
+import '../globals.css'
 
 export const metadata = {
   description: 'Sistem Pengajuan Klaim Karyawan (ReimbuS) - Modern, Cepat, dan Efisien.',

@@ -26,7 +26,7 @@ export default function MobileNav({ userName, logoutButton }: MobileNavProps) {
       {/* Mobile Drawer */}
       {isOpen && (
         <div 
-          className="fixed top-0 left-0 w-screen h-screen bg-black/50 z-40 backdrop-blur-sm" 
+          className="fixed top-0 left-0 w-screen h-screen bg-black/80 z-40" 
           onClick={() => setIsOpen(false)} 
         />
       )}

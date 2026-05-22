@@ -65,7 +65,7 @@ export default function TambahKlaimPage() {
     }
   }
 
-  const inputClass = "px-4 py-3 bg-slate-950 border border-slate-700 rounded-lg text-slate-50 font-sans text-[15px] transition-all duration-200 focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 placeholder:text-slate-500 w-full"
+  const inputClass = "px-4 py-3 bg-slate-950 border border-slate-700 rounded-lg text-slate-50 font-sans text-[15px] transition-all duration-300 focus:outline-none focus:border-blue-400 focus:ring-[3px] focus:ring-blue-500/20 shadow-inner w-full placeholder:text-slate-500"
 
   return (
     <div className="max-w-[600px] mx-auto my-5 md:my-10 p-5 md:p-[30px] bg-slate-900 rounded-2xl border border-slate-800 shadow-[0_4px_30px_rgba(0,0,0,0.3)]">
@@ -128,47 +128,70 @@ export default function TambahKlaimPage() {
 
         <div className="flex flex-col gap-2">
           <label className="text-sm font-semibold text-slate-300">Foto Nota / Struk (Image Only)</label>
-          <input 
-            type="file" 
-            accept="image/*"
-            ref={fileInputRef}
-            onChange={(e) => {
-              if (e.target.files && e.target.files[0]) {
-                const selectedFile = e.target.files[0]
-                setFile(selectedFile)
-                setPreviewUrl(URL.createObjectURL(selectedFile))
-              } else {
-                setFile(null)
-                setPreviewUrl(null)
-              }
-            }} 
-            required={!file}
-            className={`${inputClass} !py-2.5`}
-          />
-          {previewUrl && (
-            <div className="mt-2.5 bg-slate-950 border border-dashed border-slate-700 p-[15px] rounded-lg text-center flex flex-col items-center gap-3">
-              <img src={previewUrl} alt="Preview Nota" className="max-w-full max-h-[250px] rounded-md object-contain" />
-              <button 
-                type="button" 
-                className="bg-red-500/10 text-red-500 px-4 py-2 border border-red-500/20 rounded-md cursor-pointer text-[13px] font-semibold transition-colors duration-200 hover:bg-red-500/20" 
-                onClick={() => {
+          <div className="bg-slate-950 border border-dashed border-slate-700 p-5 rounded-lg text-center flex flex-col items-center justify-center gap-3 min-h-[150px]">
+            {previewUrl ? (
+              <>
+                <img src={previewUrl} alt="Preview Nota" className="max-w-full max-h-[250px] rounded-md object-contain shadow-md border border-slate-800" />
+                <div className="flex gap-3">
+                  <button 
+                    type="button" 
+                    className="bg-blue-500/10 text-blue-400 px-4 py-2 border border-blue-500/20 rounded-md cursor-pointer text-[13px] font-semibold transition-colors duration-200 hover:bg-blue-500/20 active:scale-95"
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    Ganti Foto
+                  </button>
+                  <button 
+                    type="button" 
+                    className="bg-red-500/10 text-red-500 px-4 py-2 border border-red-500/20 rounded-md cursor-pointer text-[13px] font-semibold transition-colors duration-200 hover:bg-red-500/20 active:scale-95" 
+                    onClick={() => {
+                      setFile(null)
+                      setPreviewUrl(null)
+                      if (fileInputRef.current) {
+                        fileInputRef.current.value = ''
+                      }
+                    }}
+                  >
+                    Hapus Foto
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <svg className="w-10 h-10 text-slate-500 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                <p className="text-sm text-slate-400 m-0">Pilih foto nota dari perangkat Anda</p>
+                <button 
+                  type="button" 
+                  className="bg-blue-500/10 text-blue-400 px-5 py-2 border border-blue-500/20 rounded-md cursor-pointer text-[13px] font-semibold transition-colors duration-200 hover:bg-blue-500/20 active:scale-95 mt-1"
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  Pilih File
+                </button>
+              </>
+            )}
+
+            <input 
+              type="file" 
+              accept="image/*"
+              ref={fileInputRef}
+              style={{ display: 'none' }}
+              onChange={(e) => {
+                if (e.target.files && e.target.files[0]) {
+                  const selectedFile = e.target.files[0]
+                  setFile(selectedFile)
+                  setPreviewUrl(URL.createObjectURL(selectedFile))
+                } else {
                   setFile(null)
                   setPreviewUrl(null)
-                  if (fileInputRef.current) {
-                    fileInputRef.current.value = ''
-                  }
-                }}
-              >
-                Hapus Foto
-              </button>
-            </div>
-          )}
+                }
+              }} 
+            />
+          </div>
         </div>
 
         <button 
           type="submit" 
           disabled={loading || !!success} 
-          className="bg-blue-500 text-white p-3.5 border-none rounded-lg font-semibold text-[15px] cursor-pointer mt-2.5 transition-all duration-200 shadow-[0_4px_14px_rgba(59,130,246,0.39)] hover:-translate-y-[2px] hover:bg-blue-600 hover:shadow-[0_6px_20px_rgba(59,130,246,0.4)] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
+          className="bg-gradient-to-r from-blue-600 to-blue-500 text-white p-3.5 border-none rounded-lg font-semibold text-[15px] cursor-pointer mt-2.5 transition-all duration-200 shadow-[0_4px_14px_rgba(59,130,246,0.39)] hover:-translate-y-[2px] hover:shadow-[0_6px_20px_rgba(59,130,246,0.5)] active:scale-95 active:shadow-none disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
         >
           {loading ? 'Memproses pengajuan...' : 'Kirim Pengajuan Klaim'}
         </button>

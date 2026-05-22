@@ -3,7 +3,6 @@
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import styles from './view.module.css'
 
 export default function ViewActionButtons({ id, status }: { id: string, status: string }) {
   const router = useRouter()
@@ -35,14 +34,14 @@ export default function ViewActionButtons({ id, status }: { id: string, status: 
   }
 
   return (
-    <div className={styles.actionRow}>
-      <Link href={`/dashboard/edit/${id}`} className={styles.editBtn}>
+    <div className="flex flex-col md:flex-row gap-2.5 md:gap-4 mt-6 pt-6 border-t border-dashed border-slate-800">
+      <Link href={`/dashboard/edit/${id}`} className="px-4 py-3 bg-slate-400/10 text-slate-300 rounded-lg no-underline text-sm font-semibold border border-slate-400/20 transition-all duration-200 flex-1 text-center hover:bg-slate-400/20 hover:text-slate-50 hover:border-slate-400/50 active:scale-95">
         Edit Klaim
       </Link>
       <button 
         onClick={handleDelete} 
         disabled={isDeleting} 
-        className={styles.deleteBtn}
+        className="px-4 py-3 bg-red-500/10 text-red-500 rounded-lg border border-red-500/20 text-sm font-semibold cursor-pointer transition-all duration-200 flex-1 text-center hover:bg-red-500/20 hover:border-red-500/40 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
       >
         {isDeleting ? 'Menghapus...' : 'Hapus Klaim'}
       </button>
