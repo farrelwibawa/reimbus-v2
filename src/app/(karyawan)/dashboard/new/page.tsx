@@ -3,6 +3,7 @@
 import React, { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { submitNewClaim } from '@/services/claimHandlers'
 import styles from './new.module.css'
 
 export default function TambahKlaimPage() {
@@ -44,55 +45,19 @@ export default function TambahKlaimPage() {
     }
 
     try {
-      // 1. Upload File ke koleksi Media via REST API Payload
-      const formData = new FormData()
-      formData.append('file', file)
-      // Di Payload CMS v3, data teks (seperti alt) dalam multipart/form-data wajib dibungkus dalam _payload berformat JSON
-      formData.append('_payload', JSON.stringify({ alt: `Nota Klaim ${category}` }))
-
-      const mediaRes = await fetch('/api/media', {
-        method: 'POST',
-        // Catatan: Jangan set header Content-Type di sini, biarkan browser yang mengurus multipart/form-data
-        body: formData, 
+      await submitNewClaim({
+        file,
+        category,
+        itemName,
+        description,
+        amount: Number(amount),
       })
-
-      const mediaData = await mediaRes.json()
-
-      if (!mediaRes.ok) {
-        throw new Error(mediaData.errors?.[0]?.message || 'Gagal mengunggah foto nota.')
-      }
-
-      // Payload mengembalikan ID gambar yang baru saja dibuat
-      const mediaId = mediaData.doc.id
-
-      // 2. Simpan data Reimbursement dengan mengaitkan ID media (receipt)
-      const claimRes = await fetch('/api/reimbursements', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          category,
-          itemName,
-          description,
-          amount: Number(amount),
-          receipt: mediaId,
-          // requestedBy dan claimCode TIDAK dikirim karena otomatis ditangani oleh Hook yang kita buat di Tahap 3!
-        }),
-      })
-
-      const claimData = await claimRes.json()
-
-      if (!claimRes.ok) {
-        throw new Error(claimData.errors?.[0]?.message || 'Gagal menyimpan data klaim.')
-      }
 
       setSuccess('Klaim berhasil diajukan! Mengalihkan ke dashboard...')
       
-      // Tunggu 1.5 detik lalu pindah ke dashboard
       setTimeout(() => {
         router.push('/dashboard')
-        router.refresh() // Paksa Next.js mengambil data terbaru di Server Component (Dashboard)
+        router.refresh()
       }, 1500)
 
     } catch (err: any) {

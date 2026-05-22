@@ -8,6 +8,7 @@ export const Reimbursements: CollectionConfig = {
   // Tampilan di Admin Panel: setiap baris klaim ditampilkan dengan kode klaimnya
   admin: {
     useAsTitle: 'claimCode',
+    defaultColumns: ['claimCode', 'category', 'itemName', 'description', 'status'],
   },
 
   // ─────────────────────────────────────────────────────────────────

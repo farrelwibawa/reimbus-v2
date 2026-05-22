@@ -11,6 +11,11 @@ export const statusField: Field = {
   defaultValue: 'pending',
   access: { update: adminOnlyUpdate },
   options: statusOptions,
+  admin: {
+    components: {
+      Cell: '@/components/StatusCell#StatusCell',
+    },
+  },
 }
 
 /** Catatan admin ke karyawan. Wajib diisi saat status = rejected. Hanya admin yang dapat mengubah. */

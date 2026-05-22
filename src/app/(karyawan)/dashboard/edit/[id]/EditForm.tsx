@@ -3,6 +3,7 @@
 import React, { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { submitEditClaim } from '@/services/claimHandlers'
 import styles from '../../new/new.module.css'
 
 export default function EditForm({ klaim }: { klaim: any }) {
@@ -42,48 +43,16 @@ export default function EditForm({ klaim }: { klaim: any }) {
     setSuccess('')
 
     try {
-      let mediaId = typeof klaim.receipt === 'object' ? klaim.receipt.id : klaim.receipt
-
-      // Jika user mengunggah file baru, upload ulang ke media
-      if (file) {
-        const formData = new FormData()
-        formData.append('file', file)
-        formData.append('_payload', JSON.stringify({ alt: `Nota Klaim Update - ${klaim.claimCode}` }))
-
-        const mediaRes = await fetch('/api/media', {
-          method: 'POST',
-          body: formData, 
-        })
-
-        const mediaData = await mediaRes.json()
-
-        if (!mediaRes.ok) {
-          throw new Error(mediaData.errors?.[0]?.message || 'Gagal mengunggah foto nota baru.')
-        }
-
-        mediaId = mediaData.doc.id
-      }
-
-      // 2. Update data Reimbursement
-      const claimRes = await fetch(`/api/reimbursements/${klaim.id}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          category,
-          itemName,
-          description,
-          amount: Number(amount),
-          receipt: mediaId,
-        }),
+      await submitEditClaim({
+        klaimId: klaim.id,
+        claimCode: klaim.claimCode,
+        existingReceipt: klaim.receipt,
+        file,
+        category,
+        itemName,
+        description,
+        amount: Number(amount),
       })
-
-      const claimData = await claimRes.json()
-
-      if (!claimRes.ok) {
-        throw new Error(claimData.errors?.[0]?.message || 'Gagal memperbarui data klaim.')
-      }
 
       setSuccess('Klaim berhasil diperbarui! Mengalihkan ke dashboard...')
       
