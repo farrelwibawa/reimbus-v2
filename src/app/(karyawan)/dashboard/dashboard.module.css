@@ -451,6 +451,7 @@
   .table {
     box-shadow: none;
     font-size: 13px;
+    min-width: 650px;
   }
   .th {
     padding: 12px 10px;
@@ -468,16 +469,12 @@
   }
   .summaryGrid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
-    overflow-x: unset;
-    padding-bottom: 0;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
   }
   .summaryCard {
-    min-width: unset;
-    flex-shrink: unset;
-    padding: 12px 8px;
-    gap: 8px;
+    padding: 16px 12px;
+    gap: 10px;
     flex-direction: column;
     align-items: center;
     text-align: center;

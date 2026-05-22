@@ -22,7 +22,7 @@ export default async function KaryawanLayout({
 
   return (
     <html lang="id">
-      <body style={{ margin: 0, padding: 0, backgroundColor: '#0b0f19', color: '#f8fafc', fontFamily: "'Inter', system-ui, sans-serif" }}>
+      <body style={{ margin: 0, padding: 0, backgroundColor: '#0b0f19', color: '#f8fafc', fontFamily: "'Inter', system-ui, sans-serif", overflowX: 'hidden' }}>
         {user && <Navbar userName={userName} />}
         {children}
       </body>
