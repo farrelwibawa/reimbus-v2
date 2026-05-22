@@ -1,8 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import Link from 'next/link'
-import styles from './mobileNav.module.css'
+import styles from '../app/(karyawan)/mobileNav.module.css'
 
 interface MobileNavProps {
   userName: string

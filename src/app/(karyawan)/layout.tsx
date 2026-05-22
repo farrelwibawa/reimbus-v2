@@ -2,10 +2,7 @@ import React from 'react'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import { headers as getHeaders } from 'next/headers'
-import Link from 'next/link'
-import LogoutButton from './dashboard/LogoutButton'
-import MobileNav from './MobileNav'
-import styles from './layout.module.css'
+import Navbar from '@/components/Navbar'
 
 export const metadata = {
   title: 'Dashboard Karyawan - ReimbuS',
@@ -26,22 +23,7 @@ export default async function KaryawanLayout({
   return (
     <html lang="id">
       <body style={{ margin: 0, padding: 0, backgroundColor: '#0b0f19', color: '#f8fafc', fontFamily: "'Inter', system-ui, sans-serif" }}>
-        {user && (
-          <nav className={styles.nav}>
-            <Link href="/dashboard" className={styles.logo}>
-              Reimbu<span>S</span>
-            </Link>
-            {/* Desktop Nav */}
-            <div className={styles.navRight}>
-              <span className={styles.userGreeting}>
-                Halo, <strong>{userName}</strong>
-              </span>
-              <LogoutButton />
-            </div>
-            {/* Mobile Hamburger */}
-            <MobileNav userName={userName} logoutButton={<LogoutButton />} />
-          </nav>
-        )}
+        {user && <Navbar userName={userName} />}
         {children}
       </body>
     </html>

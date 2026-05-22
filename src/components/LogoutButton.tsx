@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import styles from './dashboard.module.css'
+import styles from '../app/(karyawan)/dashboard/dashboard.module.css'
 
 export default function LogoutButton() {
   const router = useRouter()
