@@ -29,18 +29,12 @@ export const Reimbursements: CollectionConfig = {
       if (!user) return false
       if (user.role === 'admin') return true
       return {
-        and: [
-          {
-            requestedBy: {
-              equals: user.id,
-            },
-          },
-          {
-            status: {
-              equals: 'pending',
-            },
-          },
-        ],
+        requestedBy: {
+          equals: user.id,
+        },
+        status: {
+          equals: 'pending',
+        },
       }
     },
 
@@ -49,18 +43,12 @@ export const Reimbursements: CollectionConfig = {
       if (!user) return false
       if (user.role === 'admin') return true
       return {
-        and: [
-          {
-            requestedBy: {
-              equals: user.id,
-            },
-          },
-          {
-            status: {
-              equals: 'pending',
-            },
-          },
-        ],
+        requestedBy: {
+          equals: user.id,
+        },
+        status: {
+          equals: 'pending',
+        },
       }
     },
   },
