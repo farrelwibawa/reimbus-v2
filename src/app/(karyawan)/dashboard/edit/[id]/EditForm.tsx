@@ -4,6 +4,7 @@ import React, { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { submitEditClaim } from '@/services/claimHandlers'
+import { categoryOptions } from '@/collections/fields/options'
 
 export default function EditForm({ klaim }: { klaim: any }) {
   const [category, setCategory] = useState(klaim.category || 'software')
@@ -84,11 +85,11 @@ export default function EditForm({ klaim }: { klaim: any }) {
         <div className="flex flex-col gap-2">
           <label className="text-sm font-semibold text-slate-300">Kategori</label>
           <select value={category} onChange={(e) => setCategory(e.target.value)} required className={inputClass}>
-            <option value="software">Software (Langganan App/Hosting)</option>
-            <option value="hardware">Hardware (Monitor/Keyboard)</option>
-            <option value="transport">Transportasi (Tiket/Bensin)</option>
-            <option value="pantry">Pantry (Konsumsi/Kopi)</option>
-            <option value="others">Lain-lain</option>
+            {categoryOptions.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
           </select>
         </div>
 

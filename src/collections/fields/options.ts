@@ -6,11 +6,11 @@
 
 /** Pilihan kategori pengeluaran yang valid. */
 export const categoryOptions = [
-  { label: 'Software', value: 'software' },
-  { label: 'Hardware', value: 'hardware' },
-  { label: 'Transport', value: 'transport' },
-  { label: 'Pantry', value: 'pantry' },
-  { label: 'Others', value: 'others' },
+  { label: 'Software (Langganan App/Hosting)', value: 'software' },
+  { label: 'Hardware (Monitor/Keyboard)', value: 'hardware' },
+  { label: 'Transportasi (Tiket/Bensin)', value: 'transport' },
+  { label: 'Pantry (Konsumsi/Kopi)', value: 'pantry' },
+  { label: 'Lain-lain', value: 'others' },
 ]
 
 /** Union type dari semua nilai kategori yang valid. */
