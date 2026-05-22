@@ -1,16 +1,16 @@
 import type { Field } from 'payload'
 import { categoryOptions } from './options'
 
-// ── Field yang diisi karyawan saat mengajukan klaim ──────────────
+// Employee claim fields
 
-/** Kode klaim unik (REQ-YYYYMMDDHHmmss). Diisi otomatis oleh beforeChange hook — read-only. */
+/** Unique claim code (auto-filled by beforeChange hook). */
 export const claimCodeField: Field = {
   name: 'claimCode',
   type: 'text',
   admin: { readOnly: true },
 }
 
-/** Kategori pengeluaran. Pilihan dikelola terpusat di ./options.ts → categoryOptions. */
+/** Expense category. */
 export const categoryField: Field = {
   name: 'category',
   type: 'select',
@@ -18,28 +18,28 @@ export const categoryField: Field = {
   options: categoryOptions,
 }
 
-/** Nama barang atau jasa yang diklaim. */
+/** Name of the item or service. */
 export const itemNameField: Field = {
   name: 'itemName',
   type: 'text',
   required: true,
 }
 
-/** Keterangan tambahan (opsional). */
+/** Additional description (optional). */
 export const descriptionField: Field = {
   name: 'description',
   type: 'textarea',
   required: false,
 }
 
-/** Nominal uang yang diklaim dalam Rupiah. */
+/** Claim amount in IDR. */
 export const amountField: Field = {
   name: 'amount',
   type: 'number',
   required: true,
 }
 
-/** Foto struk/nota pembelian. Relasinya ke collection Media. */
+/** Receipt/invoice photo upload. */
 export const receiptField: Field = {
   name: 'receipt',
   type: 'upload',

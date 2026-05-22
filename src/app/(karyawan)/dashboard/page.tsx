@@ -5,29 +5,24 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import ClickableRow from './ClickableRow'
 
-// ─────────────────────────────────────────────────────────────────
-// FRONTEND PAGE: DASHBOARD UTAMA KARYAWAN
-// Menggunakan Next.js Server Component (Rendering langsung di server demi kecepatan maksimal).
-// ─────────────────────────────────────────────────────────────────
+// Employee Dashboard Server Component
 export default async function EmployeeDashboard(props: { searchParams: Promise<{ status?: string }> }) {
-  // 1. Membaca parameter filter status pencarian dari URL (misal: ?status=paid)
+  // Get filter status from URL params
   const searchParams = await props.searchParams
   const filterStatus = searchParams.status
 
-  // 2. Menginisialisasi Payload Engine di sisi server
+  // Initialize payload
   const payload = await getPayload({ config: configPromise })
   const headers = await getHeaders()
   
-  // 3. VALIDASI KEAMANAN FRONTEND: Memastikan user sudah login sebelum melihat dashboard
+  // Validate authentication
   const { user } = await payload.auth({ headers })
 
-  // Jika belum login, otomatis tendang (redirect) karyawan ke halaman /login
   if (!user) {
     redirect('/login')
   }
 
-  // 4. PENGAMBILAN DATA (DATABASE QUERY): Mengambil daftar klaim milik karyawan yang login
-  // overrideAccess: false memastikan aturan Access Control di database tetap berjalan ketat!
+  // Fetch user claims (enforce access control)
   const { docs: reimbursements } = await payload.find({
     collection: 'reimbursements',
     overrideAccess: false,
@@ -35,18 +30,18 @@ export default async function EmployeeDashboard(props: { searchParams: Promise<{
     limit: 100,
   })
 
-  // 5. LOGIKA STATISTIK (AGGREGATION): Menghitung jumlah klaim berdasarkan tiap status
+  // Calculate status statistics
   const countPending = reimbursements.filter((r) => r.status === 'pending').length
   const countApproved = reimbursements.filter((r) => r.status === 'approved').length
   const countPaid = reimbursements.filter((r) => r.status === 'paid').length
   const countRejected = reimbursements.filter((r) => r.status === 'rejected').length
 
-  // 6. FILTER TABEL: Menyaring data yang ditampilkan berdasarkan tombol filter yang aktif
+  // Filter displayed claims
   const displayedReimbursements = filterStatus && filterStatus !== 'all' 
     ? reimbursements.filter(r => r.status === filterStatus)
     : reimbursements
 
-  // 7. FORMAT MATA UANG: Fungsi pembantu untuk mengubah angka menjadi format Rupiah (IDR)
+  // Currency formatter
   const formatRupiah = (angka: number) => {
     return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(angka)
   }

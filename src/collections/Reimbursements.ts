@@ -11,13 +11,9 @@ export const Reimbursements: CollectionConfig = {
     defaultColumns: ['claimCode', 'category', 'itemName', 'description', 'status'],
   },
 
-  // ─────────────────────────────────────────────────────────────────
-  // ACCESS CONTROL (RBAC - Role Based Access Control)
-  // Mengatur siapa yang boleh melakukan apa terhadap data klaim.
-  // Ini adalah lapisan keamanan di level database.
-  // ─────────────────────────────────────────────────────────────────
+  // Access Control (RBAC)
   access: {
-    // READ: Admin bisa lihat semua klaim. Karyawan hanya bisa lihat klaim miliknya sendiri.
+    // READ: Admin sees all. Employees see only their own.
     read: ({ req: { user } }) => {
       if (!user) return false
       if (user.role === 'admin') return true
@@ -28,7 +24,7 @@ export const Reimbursements: CollectionConfig = {
       }
     },
 
-    // UPDATE: Admin bisa edit semua. Karyawan hanya bisa edit jika klaim miliknya & masih Pending.
+    // UPDATE: Admin can update all. Employees can update their own pending claims.
     update: ({ req: { user } }) => {
       if (!user) return false
       if (user.role === 'admin') return true
@@ -48,8 +44,7 @@ export const Reimbursements: CollectionConfig = {
       }
     },
 
-    // DELETE: Admin bisa hapus semua. Karyawan hanya bisa hapus jika miliknya & masih Pending.
-    // Klaim yang sudah Approved/Paid/Rejected tidak bisa dihapus oleh karyawan.
+    // DELETE: Admin can delete all. Employees can delete their own pending claims.
     delete: ({ req: { user } }) => {
       if (!user) return false
       if (user.role === 'admin') return true
@@ -70,21 +65,18 @@ export const Reimbursements: CollectionConfig = {
     },
   },
 
-  // ─────────────────────────────────────────────────────────────────
-  // HOOKS (Otomatisasi / Sensor Data)
-  // Fungsi yang berjalan otomatis sebelum atau sesudah data berubah.
-  // ─────────────────────────────────────────────────────────────────
+  // Lifecycle Hooks
   hooks: {
-    // BEFORE CHANGE: Dijalankan SEBELUM data disimpan ke database
+    // beforeChange: Runs before saving to database
     beforeChange: [
       ({ req, operation, data, originalDoc }) => {
         if (operation === 'create') {
-          // Otomatis isi field requestedBy dengan ID karyawan yang sedang login
+          // Auto-fill requestedBy field with current user ID
           if (req.user) {
             data.requestedBy = req.user.id
           }
 
-          // Otomatis generate Kode Klaim unik berformat: REQ-YYYYMMDDHHMMSS
+          // Auto-generate unique Claim Code (REQ-YYYYMMDDHHMMSS)
           const now = new Date()
           const year = now.getFullYear()
           const month = String(now.getMonth() + 1).padStart(2, '0')
@@ -96,7 +88,7 @@ export const Reimbursements: CollectionConfig = {
           data.claimCode = `REQ-${year}${month}${day}${hours}${minutes}${seconds}`
 
         } else if (operation === 'update') {
-          // Saat update: cegah perubahan requestedBy & claimCode agar tidak bisa dimanipulasi
+          // Prevent manipulation of read-only fields during update
           if (data.requestedBy) {
             delete data.requestedBy
           }
@@ -104,7 +96,7 @@ export const Reimbursements: CollectionConfig = {
             delete data.claimCode
           }
 
-          // Validasi: Admin WAJIB mengisi alasan (adminNotes) jika status diubah menjadi Rejected
+          // Validate: Admin notes are required when status is rejected
           const currentStatus = data.status || originalDoc?.status
           if (currentStatus === 'rejected') {
             const notes = data.adminNotes !== undefined ? data.adminNotes : originalDoc?.adminNotes
@@ -118,10 +110,10 @@ export const Reimbursements: CollectionConfig = {
       },
     ],
 
-    // AFTER CHANGE: Dijalankan SETELAH data berhasil disimpan ke database
+    // afterChange: Runs after saving to database
     afterChange: [
       async ({ doc, previousDoc, operation, req }) => {
-        // Setelah klaim baru dibuat: perbarui nama file struk agar sesuai kode klaim
+        // Update receipt alt text with claim code upon creation
         if (operation === 'create' && doc.receipt) {
           const mediaId = typeof doc.receipt === 'object' ? doc.receipt.id : doc.receipt
           
@@ -134,10 +126,10 @@ export const Reimbursements: CollectionConfig = {
           })
         }
 
-        // Setelah status klaim BERUBAH: kirim email notifikasi ke karyawan via Brevo SMTP
+        // Send email notification on status change
         if (operation === 'update' && previousDoc && doc.status !== previousDoc.status) {
           try {
-            // Ambil data karyawan (nama + email) berdasarkan ID di field requestedBy
+            // Retrieve employee email
             const employeeId = typeof doc.requestedBy === 'object' ? doc.requestedBy.id : doc.requestedBy;
             if (employeeId) {
               const employee = await req.payload.findByID({ 
@@ -146,7 +138,7 @@ export const Reimbursements: CollectionConfig = {
               });
 
               if (employee && employee.email) {
-                // Kirim email HTML berisi rincian klaim lengkap ke inbox karyawan
+                // Dispatch email
                 await req.payload.sendEmail({
                   to: employee.email,
                   subject: `[ReimbuS] Status Klaim Anda: ${doc.status.toUpperCase()}`,
@@ -215,9 +207,6 @@ export const Reimbursements: CollectionConfig = {
     ],
   },
 
-  // ─────────────────────────────────────────────────────────────────
-  // FIELDS (Kolom-kolom data dalam tabel klaim)
-  // Payload otomatis membuat form di Admin Panel berdasarkan daftar ini.
-  // ─────────────────────────────────────────────────────────────────
+  // Collection fields definition
   fields: reimbursementFields,
 }

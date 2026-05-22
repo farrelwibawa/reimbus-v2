@@ -1,17 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { headers } from 'next/headers'
 /**
- * ==========================================
- * FILE: route.ts (API Endpoint: /api/cetak-pdf/[id])
- * FUNGSI: Mesin penghasil PDF Bukti Pencairan Klaim (Invoice/Receipt).
- * ------------------------------------------
- * CARA KERJA (Bahan Presentasi Playwright):
- * 1. Endpoint ini menerima ID klaim, lalu mengecek keamanan apakah user berhak melihatnya.
- * 2. Data klaim dan foto struk ditarik dari database.
- * 3. Data disuntikkan ke dalam desain kodingan HTML & CSS.
- * 4. Playwright (Headless Browser) membuka Chromium tanpa layar, memuat HTML tersebut, 
- *    lalu mencetaknya menjadi dokumen PDF (.pdf()) secara pixel-perfect.
- * ==========================================
+ * API Endpoint: /api/cetak-pdf/[id]
+ * Generates a PDF receipt for a paid reimbursement claim using Playwright.
  */
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
@@ -24,11 +15,9 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
   try {
     const payload = await getPayload({ config: configPromise })
     
-    // VALIDASI KEAMANAN (SECURITY PATCH)
-    // 1. Dapatkan sesi login saat ini dari headers request
+    // Validate authentication
     const { user } = await payload.auth({ headers: await headers() })
     
-    // 2. Jika tidak ada yang login, tolak akses (Error 401)
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized: Anda harus login terlebih dahulu.' }, { status: 401 })
     }
@@ -44,8 +33,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
       return NextResponse.json({ error: 'Klaim tidak ditemukan' }, { status: 404 })
     }
 
-    // VALIDASI KEPEMILIKAN
-    // 3. Pastikan Karyawan A tidak bisa mengunduh PDF milik Karyawan B
+    // Validate ownership
     const isOwner = typeof klaim.requestedBy === 'object' 
       ? (klaim.requestedBy as any).id === user.id 
       : klaim.requestedBy === user.id
