@@ -3,6 +3,7 @@ import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import { headers as getHeaders } from 'next/headers'
 import Navbar from '@/components/Navbar'
+import '@/app/globals.css'
 
 export const metadata = {
   title: 'Dashboard Karyawan - ReimbuS',

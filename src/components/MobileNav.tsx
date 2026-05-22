@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useState } from 'react'
-import styles from '../app/(karyawan)/mobileNav.module.css'
 
 interface MobileNavProps {
   userName: string
@@ -15,25 +14,28 @@ export default function MobileNav({ userName, logoutButton }: MobileNavProps) {
     <>
       {/* Hamburger Button */}
       <button
-        className={styles.hamburger}
+        className="flex md:hidden flex-col justify-center items-center gap-[5px] bg-transparent border-none cursor-pointer p-2 z-[100]"
         onClick={() => setIsOpen(!isOpen)}
         aria-label="Toggle menu"
       >
-        <span className={`${styles.bar} ${isOpen ? styles.bar1Open : ''}`} />
-        <span className={`${styles.bar} ${isOpen ? styles.bar2Open : ''}`} />
-        <span className={`${styles.bar} ${isOpen ? styles.bar3Open : ''}`} />
+        <span className={`w-6 h-[2px] bg-slate-50 transition-all duration-300 ease-in-out ${isOpen ? 'translate-y-[7px] rotate-45' : ''}`} />
+        <span className={`w-6 h-[2px] bg-slate-50 transition-all duration-300 ease-in-out ${isOpen ? 'opacity-0' : ''}`} />
+        <span className={`w-6 h-[2px] bg-slate-50 transition-all duration-300 ease-in-out ${isOpen ? '-translate-y-[7px] -rotate-45' : ''}`} />
       </button>
 
       {/* Mobile Drawer */}
       {isOpen && (
-        <div className={styles.overlay} onClick={() => setIsOpen(false)} />
+        <div 
+          className="fixed top-0 left-0 w-screen h-screen bg-black/50 z-40 backdrop-blur-sm" 
+          onClick={() => setIsOpen(false)} 
+        />
       )}
-      <div className={`${styles.drawer} ${isOpen ? styles.drawerOpen : ''}`}>
-        <div className={styles.drawerBody}>
-          <p className={styles.drawerGreeting}>
-            Halo, <strong>{userName}</strong>
+      <div className={`fixed top-0 right-0 w-[250px] h-screen bg-slate-800 shadow-[-5px_0_15px_rgba(0,0,0,0.5)] z-50 transition-transform duration-300 ease-in-out flex flex-col ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+        <div className="pt-[80px] p-5 flex flex-col gap-5 h-full">
+          <p className="m-0 text-base text-slate-400 border-b border-slate-700 pb-[10px]">
+            Halo, <strong className="text-slate-50 block mt-1 text-lg">{userName}</strong>
           </p>
-          <div className={styles.drawerLogout} onClick={() => setIsOpen(false)}>
+          <div className="mt-auto" onClick={() => setIsOpen(false)}>
             {logoutButton}
           </div>
         </div>
