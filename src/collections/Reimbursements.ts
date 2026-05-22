@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { reimbursementFields } from './fields'
 
 export const Reimbursements: CollectionConfig = {
   // Nama unik collection ini di URL API: /api/reimbursements
@@ -217,106 +218,5 @@ export const Reimbursements: CollectionConfig = {
   // FIELDS (Kolom-kolom data dalam tabel klaim)
   // Payload otomatis membuat form di Admin Panel berdasarkan daftar ini.
   // ─────────────────────────────────────────────────────────────────
-  fields: [
-    {
-      // Kode klaim unik, diisi otomatis oleh beforeChange Hook (tidak bisa diedit manual)
-      name: 'claimCode',
-      type: 'text',
-      admin: {
-        readOnly: true,
-      },
-    },
-    {
-      // Kategori pengeluaran: ditampilkan sebagai dropdown pilihan
-      name: 'category',
-      type: 'select',
-      required: true,
-      options: [
-        { label: 'Software', value: 'software' },
-        { label: 'Hardware', value: 'hardware' },
-        { label: 'Transport', value: 'transport' },
-        { label: 'Pantry', value: 'pantry' },
-        { label: 'Others', value: 'others' },
-      ],
-    },
-    {
-      // Nama barang atau jasa yang diklaim
-      name: 'itemName',
-      type: 'text',
-      required: true,
-    },
-    {
-      // Keterangan tambahan (opsional)
-      name: 'description',
-      type: 'textarea',
-      required: false,
-    },
-    {
-      // Nominal uang yang diklaim (dalam Rupiah)
-      name: 'amount',
-      type: 'number',
-      required: true,
-    },
-    {
-      // Foto struk/nota pembelian. Tersimpan di Collection Media.
-      name: 'receipt',
-      type: 'upload',
-      relationTo: 'media',
-      required: true,
-    },
-    {
-      // Status klaim. Default: pending. HANYA ADMIN yang bisa mengubah field ini.
-      name: 'status',
-      type: 'select',
-      defaultValue: 'pending',
-      access: {
-        // Field-level access: Hanya admin yang boleh mengubah status klaim
-        update: ({ req: { user } }) => {
-          return user?.role === 'admin'
-        },
-      },
-      options: [
-        { label: 'Pending', value: 'pending' },
-        { label: 'Approved (Disetujui)', value: 'approved' },
-        { label: 'Paid (Lunas)', value: 'paid' },
-        { label: 'Rejected (Ditolak)', value: 'rejected' },
-      ],
-    },
-    {
-      // Catatan dari Admin ke Karyawan. WAJIB diisi jika status = Rejected.
-      // HANYA ADMIN yang bisa mengisi field ini.
-      name: 'adminNotes',
-      type: 'textarea',
-      access: {
-        update: ({ req: { user } }) => {
-          return user?.role === 'admin'
-        },
-      },
-      admin: {
-        description: 'Tinggalkan pesan untuk karyawan (wajib jika klaim ditolak).',
-      },
-    },
-    {
-      // Relasi ke collection Employees: menyimpan ID karyawan yang mengajukan klaim.
-      // Diisi otomatis oleh beforeChange Hook, tidak bisa diedit manual.
-      name: 'requestedBy',
-      type: 'relationship',
-      relationTo: 'employees',
-      admin: {
-        readOnly: true,
-      },
-    },
-    {
-      // Komponen UI kustom: tombol "Unduh PDF" yang muncul di sidebar Admin Panel.
-      // Hanya tampil di UI, tidak menyimpan data ke database.
-      name: 'printPdf',
-      type: 'ui',
-      admin: {
-        position: 'sidebar',
-        components: {
-          Field: '@/components/PrintPdfButton#PrintPdfButton',
-        },
-      },
-    },
-  ],
+  fields: reimbursementFields,
 }

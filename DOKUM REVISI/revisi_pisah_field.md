@@ -1,0 +1,144 @@
+# Penjelasan Revisi: Pemisahan Field Collection
+
+Dokumen ini berisi rincian spesifik mengenai kode asal (sebelum direvisi) dan menjadi seperti apa kodenya setelah dipindah ke file baru.
+
+Semua "Kode Asal" di bawah ini sebelumnya menumpuk menjadi satu di dalam array `fields: []` pada file `src/collections/Reimbursements.ts`.
+
+---
+
+## 1. `options.ts`
+File ini menampung daftar pilihan (dropdown) agar bisa di-reuse oleh frontend.
+
+**🔴 Kode Asal (di `Reimbursements.ts`)**
+Kodenya ditulis langsung (*hardcoded*) di dalam definisi field `category` dan `status`:
+```typescript
+options: [
+  { label: 'Software', value: 'software' },
+  { label: 'Hardware', value: 'hardware' },
+  { label: 'Transport', value: 'transport' },
+  { label: 'Pantry', value: 'pantry' },
+  { label: 'Others', value: 'others' },
+]
+```
+
+**🟢 Kode Baru (di `options.ts`)**
+Kodenya diekstrak menjadi variabel konstan yang bisa di-eksport:
+```typescript
+export const categoryOptions = [
+  { label: 'Software', value: 'software' },
+  { label: 'Hardware', value: 'hardware' },
+  { label: 'Transport', value: 'transport' },
+  { label: 'Pantry', value: 'pantry' },
+  { label: 'Others', value: 'others' },
+]
+
+export type CategoryValue = 'software' | 'hardware' | 'transport' | 'pantry' | 'others'
+```
+
+---
+
+## 2. `fieldAccess.ts`
+File ini menampung aturan "siapa yang boleh mengubah field ini".
+
+**🔴 Kode Asal (di `Reimbursements.ts`)**
+Kodenya diketik berulang-ulang di dalam field `status` dan `adminNotes`:
+```typescript
+access: {
+  update: ({ req: { user } }) => {
+    return user?.role === 'admin'
+  },
+}
+```
+
+**🟢 Kode Baru (di `fieldAccess.ts`)**
+Kodenya dijadikan satu fungsi tunggal:
+```typescript
+import type { FieldAccess } from 'payload'
+
+export const adminOnlyUpdate: FieldAccess = ({ req: { user } }) => {
+  return user?.role === 'admin'
+}
+```
+
+---
+
+## 3. `claimFields.ts`
+File ini berisi kumpulan field untuk input karyawan.
+
+**🔴 Kode Asal (di `Reimbursements.ts`)**
+Field `category` terlihat seperti ini (opsi ditulis inline):
+```typescript
+{
+  name: 'category',
+  type: 'select',
+  required: true,
+  options: [ /* ... array hardcoded ... */ ],
+}
+```
+
+**🟢 Kode Baru (di `claimFields.ts`)**
+Di file baru, field `category` menjadi jauh lebih bersih karena opsinya mengambil dari `options.ts`:
+```typescript
+import { categoryOptions } from './options'
+
+export const categoryField: Field = {
+  name: 'category',
+  type: 'select',
+  required: true,
+  options: categoryOptions, // <-- Memanggil dari options.ts
+}
+// ... (dan export claimCodeField, itemNameField, amountField, receiptField)
+```
+
+---
+
+## 4. `adminFields.ts`
+File ini berisi kumpulan field yang hanya boleh dikendalikan admin.
+
+**🔴 Kode Asal (di `Reimbursements.ts`)**
+Field `status` terlihat seperti ini (akses dan opsi ditulis inline):
+```typescript
+{
+  name: 'status',
+  type: 'select',
+  defaultValue: 'pending',
+  access: { update: ({ req: { user } }) => user?.role === 'admin' },
+  options: [ /* ... array hardcoded ... */ ],
+}
+```
+
+**🟢 Kode Baru (di `adminFields.ts`)**
+Di file baru, field `status` tinggal memanggil fungsi dari `fieldAccess.ts` dan array dari `options.ts`:
+```typescript
+import { statusOptions } from './options'
+import { adminOnlyUpdate } from './fieldAccess'
+
+export const statusField: Field = {
+  name: 'status',
+  type: 'select',
+  defaultValue: 'pending',
+  access: { update: adminOnlyUpdate }, // <-- Memanggil dari fieldAccess.ts
+  options: statusOptions,              // <-- Memanggil dari options.ts
+}
+// ... (dan export adminNotesField, requestedByField, printPdfField)
+```
+
+---
+
+## 5. `index.ts`
+Berfungsi sebagai perakit (barrel export) dari ke-4 file di atas.
+
+**🟢 Kode Baru (di `index.ts`)**
+```typescript
+import { claimCodeField, categoryField /* ... dll */ } from './claimFields'
+import { statusField, adminNotesField /* ... dll */ } from './adminFields'
+
+export const reimbursementFields: Field[] = [
+  claimCodeField,
+  categoryField,
+  // ... field karyawan lainnya ...
+  statusField,
+  adminNotesField,
+  // ... field admin lainnya ...
+]
+```
