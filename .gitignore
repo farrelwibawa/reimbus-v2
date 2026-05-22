@@ -48,3 +48,10 @@ node_modules/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+# OS generated files
+Thumbs.db
+__MACOSX/
+
+# pnpm logs
+pnpm-debug.log*
