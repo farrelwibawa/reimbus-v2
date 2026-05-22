@@ -1,4 +1,4 @@
-// Service Layer: Handling reimbursement claims data and media uploads
+// Service Layer: Menangani pengajuan klaim dan upload media
 
 export interface NewClaimParams {
   file: File
@@ -20,8 +20,8 @@ export interface EditClaimParams {
 }
 
 /**
- * Uploads receipt media to Payload Media collection.
- * @returns {string} The document ID of the uploaded media.
+ * Mengupload struk/media ke collection Media Payload.
+ * @returns {string} ID dokumen media yang berhasil diupload.
  */
 async function uploadMedia(file: File, altText: string) {
   const formData = new FormData()
@@ -43,7 +43,7 @@ async function uploadMedia(file: File, altText: string) {
 }
 
 /**
- * Submits a new reimbursement claim.
+ * Mengajukan klaim reimbursement baru.
  */
 export async function submitNewClaim(params: NewClaimParams) {
   const { file, category, itemName, description, amount } = params
@@ -52,10 +52,10 @@ export async function submitNewClaim(params: NewClaimParams) {
     throw new Error('Please upload a receipt.')
   }
 
-  // Upload receipt image first
+  // Upload gambar struk terlebih dahulu
   const mediaId = await uploadMedia(file, `Claim Receipt - ${category}`)
 
-  // Save claim data with the associated media ID
+  // Simpan data klaim beserta ID media yang terkait
   const claimRes = await fetch('/api/reimbursements', {
     method: 'POST',
     headers: {
@@ -80,19 +80,19 @@ export async function submitNewClaim(params: NewClaimParams) {
 }
 
 /**
- * Updates an existing reimbursement claim.
+ * Memperbarui data klaim reimbursement yang sudah ada.
  */
 export async function submitEditClaim(params: EditClaimParams) {
   const { klaimId, claimCode, existingReceipt, file, category, itemName, description, amount } = params
 
   let mediaId = typeof existingReceipt === 'object' ? existingReceipt?.id : existingReceipt
 
-  // Upload new image if provided
+  // Upload gambar baru jika ada
   if (file) {
     mediaId = await uploadMedia(file, `Claim Receipt Update - ${claimCode}`)
   }
 
-  // Update claim data
+  // Perbarui data klaim
   const claimRes = await fetch(`/api/reimbursements/${klaimId}`, {
     method: 'PATCH',
     headers: {

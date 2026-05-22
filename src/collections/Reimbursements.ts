@@ -11,9 +11,9 @@ export const Reimbursements: CollectionConfig = {
     defaultColumns: ['claimCode', 'category', 'itemName', 'description', 'status'],
   },
 
-  // Access Control (RBAC)
+  // Kontrol Akses (RBAC)
   access: {
-    // READ: Admin sees all. Employees see only their own.
+    // READ: Admin melihat semua. Karyawan hanya melihat klaim mereka sendiri.
     read: ({ req: { user } }) => {
       if (!user) return false
       if (user.role === 'admin') return true
@@ -24,7 +24,7 @@ export const Reimbursements: CollectionConfig = {
       }
     },
 
-    // UPDATE: Admin can update all. Employees can update their own pending claims.
+    // UPDATE: Admin bisa update semua. Karyawan bisa update klaim mereka yang pending.
     update: ({ req: { user } }) => {
       if (!user) return false
       if (user.role === 'admin') return true
@@ -38,7 +38,7 @@ export const Reimbursements: CollectionConfig = {
       }
     },
 
-    // DELETE: Admin can delete all. Employees can delete their own pending claims.
+    // DELETE: Admin bisa hapus semua. Karyawan bisa hapus klaim mereka yang pending.
     delete: ({ req: { user } }) => {
       if (!user) return false
       if (user.role === 'admin') return true
@@ -53,18 +53,18 @@ export const Reimbursements: CollectionConfig = {
     },
   },
 
-  // Lifecycle Hooks
+  // Hooks Siklus Hidup
   hooks: {
-    // beforeChange: Runs before saving to database
+    // beforeChange: Berjalan sebelum data disimpan ke database
     beforeChange: [
       ({ req, operation, data, originalDoc }) => {
         if (operation === 'create') {
-          // Auto-fill requestedBy field with current user ID
+          // Isi otomatis field requestedBy dengan ID user saat ini
           if (req.user) {
             data.requestedBy = req.user.id
           }
 
-          // Auto-generate unique Claim Code (REQ-YYYYMMDDHHMMSS)
+          // Generate otomatis Kode Klaim (REQ-YYYYMMDDHHMMSS)
           const now = new Date()
           const year = now.getFullYear()
           const month = String(now.getMonth() + 1).padStart(2, '0')
@@ -76,7 +76,7 @@ export const Reimbursements: CollectionConfig = {
           data.claimCode = `REQ-${year}${month}${day}${hours}${minutes}${seconds}`
 
         } else if (operation === 'update') {
-          // Prevent manipulation of read-only fields during update
+          // Cegah manipulasi field read-only saat update
           if (data.requestedBy) {
             delete data.requestedBy
           }
@@ -84,7 +84,7 @@ export const Reimbursements: CollectionConfig = {
             delete data.claimCode
           }
 
-          // Validate: Admin notes are required when status is rejected
+          // Validasi: Catatan admin wajib diisi jika status rejected
           const currentStatus = data.status || originalDoc?.status
           if (currentStatus === 'rejected') {
             const notes = data.adminNotes !== undefined ? data.adminNotes : originalDoc?.adminNotes
@@ -98,10 +98,10 @@ export const Reimbursements: CollectionConfig = {
       },
     ],
 
-    // afterChange: Runs after saving to database
+    // afterChange: Berjalan setelah data disimpan ke database
     afterChange: [
       async ({ doc, previousDoc, operation, req }) => {
-        // Update receipt alt text with claim code upon creation
+        // Update alt text gambar struk dengan kode klaim saat pembuatan
         if (operation === 'create' && doc.receipt) {
           const mediaId = typeof doc.receipt === 'object' ? doc.receipt.id : doc.receipt
           
@@ -114,10 +114,10 @@ export const Reimbursements: CollectionConfig = {
           })
         }
 
-        // Send email notification on status change
+        // Kirim notifikasi email saat status berubah
         if (operation === 'update' && previousDoc && doc.status !== previousDoc.status) {
           try {
-            // Retrieve employee email
+            // Ambil email karyawan
             const employeeId = typeof doc.requestedBy === 'object' ? doc.requestedBy.id : doc.requestedBy;
             if (employeeId) {
               const employee = await req.payload.findByID({ 
@@ -126,7 +126,7 @@ export const Reimbursements: CollectionConfig = {
               });
 
               if (employee && employee.email) {
-                // Dispatch email
+                // Kirim email
                 await req.payload.sendEmail({
                   to: employee.email,
                   subject: `[ReimbuS] Status Klaim Anda: ${doc.status.toUpperCase()}`,
@@ -195,6 +195,6 @@ export const Reimbursements: CollectionConfig = {
     ],
   },
 
-  // Collection fields definition
+  // Definisi field collection
   fields: reimbursementFields,
 }

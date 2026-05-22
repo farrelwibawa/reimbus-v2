@@ -2,9 +2,9 @@ import type { Field } from 'payload'
 import { statusOptions } from './options'
 import { adminOnlyUpdate } from './fieldAccess'
 
-// Admin-only fields & custom UI components
+// Field khusus admin & komponen UI kustom
 
-/** Claim status lifecycle. Admin only. */
+/** Siklus status klaim. Hanya admin. */
 export const statusField: Field = {
   name: 'status',
   type: 'select',
@@ -18,7 +18,7 @@ export const statusField: Field = {
   },
 }
 
-/** Admin notes to employee. Required if rejected. */
+/** Catatan admin ke karyawan. Wajib jika ditolak. */
 export const adminNotesField: Field = {
   name: 'adminNotes',
   type: 'textarea',
@@ -28,7 +28,7 @@ export const adminNotesField: Field = {
   },
 }
 
-/** Employee who requested the claim (auto-filled by beforeChange hook). */
+/** Karyawan yang mengajukan klaim (diisi otomatis oleh hook beforeChange). */
 export const requestedByField: Field = {
   name: 'requestedBy',
   type: 'relationship',
@@ -36,7 +36,7 @@ export const requestedByField: Field = {
   admin: { readOnly: true },
 }
 
-/** Custom "Download PDF" button in Admin Panel. */
+/** Tombol kustom "Unduh PDF" di Admin Panel. */
 export const printPdfField: Field = {
   name: 'printPdf',
   type: 'ui',

@@ -7,18 +7,18 @@ export const Employees: CollectionConfig = {
     useAsTitle: 'name',
   },
 
-  // Enable Payload built-in authentication (auto-adds email & password fields)
+  // Aktifkan autentikasi bawaan Payload (otomatis menambahkan field email & password)
   auth: true,
 
   fields: [
     {
-      /** Full Name */
+      /** Nama Lengkap */
       name: 'name',
       type: 'text',
       required: true,
     },
     {
-      /** User role (admin vs employee) */
+      /** Peran akun (admin atau employee) */
       name: 'role',
       type: 'select',
       required: true,

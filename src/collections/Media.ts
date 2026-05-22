@@ -3,25 +3,25 @@ import type { CollectionConfig } from 'payload'
 export const Media: CollectionConfig = {
   slug: 'media',
 
-  // Access Control: Public read access for images
+  // Hak Akses: Publik dapat membaca gambar
   access: {
     read: () => true,
   },
 
   fields: [
     {
-      /** Alt text (auto-filled by claim hook) */
+      /** Teks alternatif (diisi otomatis oleh hook klaim) */
       name: 'alt',
       type: 'text',
       required: true,
     },
   ],
 
-  // Media upload settings
+  // Pengaturan upload media
   upload: {
     staticDir: 'media',
     mimeTypes: ['image/*'],
-    // Auto-generate 150x150 thumbnails
+    // Generate otomatis thumbnail 150x150
     imageSizes: [
       {
         name: 'thumbnail',

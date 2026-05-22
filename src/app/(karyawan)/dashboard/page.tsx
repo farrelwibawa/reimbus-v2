@@ -5,24 +5,24 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import ClickableRow from './ClickableRow'
 
-// Employee Dashboard Server Component
+// Komponen Server Dashboard Karyawan
 export default async function EmployeeDashboard(props: { searchParams: Promise<{ status?: string }> }) {
-  // Get filter status from URL params
+  // Ambil status filter dari parameter URL
   const searchParams = await props.searchParams
   const filterStatus = searchParams.status
 
-  // Initialize payload
+  // Inisialisasi payload
   const payload = await getPayload({ config: configPromise })
   const headers = await getHeaders()
   
-  // Validate authentication
+  // Validasi autentikasi user
   const { user } = await payload.auth({ headers })
 
   if (!user) {
     redirect('/login')
   }
 
-  // Fetch user claims (enforce access control)
+  // Ambil klaim user (menggunakan access control ketat)
   const { docs: reimbursements } = await payload.find({
     collection: 'reimbursements',
     overrideAccess: false,
@@ -30,18 +30,18 @@ export default async function EmployeeDashboard(props: { searchParams: Promise<{
     limit: 100,
   })
 
-  // Calculate status statistics
+  // Hitung statistik klaim berdasarkan status
   const countPending = reimbursements.filter((r) => r.status === 'pending').length
   const countApproved = reimbursements.filter((r) => r.status === 'approved').length
   const countPaid = reimbursements.filter((r) => r.status === 'paid').length
   const countRejected = reimbursements.filter((r) => r.status === 'rejected').length
 
-  // Filter displayed claims
+  // Filter klaim yang ditampilkan
   const displayedReimbursements = filterStatus && filterStatus !== 'all' 
     ? reimbursements.filter(r => r.status === filterStatus)
     : reimbursements
 
-  // Currency formatter
+  // Format angka ke Rupiah
   const formatRupiah = (angka: number) => {
     return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(angka)
   }

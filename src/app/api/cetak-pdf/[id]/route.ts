@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { headers } from 'next/headers'
 /**
  * API Endpoint: /api/cetak-pdf/[id]
- * Generates a PDF receipt for a paid reimbursement claim using Playwright.
+ * Men-generate PDF bukti pencairan klaim menggunakan Playwright.
  */
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
@@ -15,14 +15,14 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
   try {
     const payload = await getPayload({ config: configPromise })
     
-    // Validate authentication
+    // Validasi autentikasi
     const { user } = await payload.auth({ headers: await headers() })
     
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized: Anda harus login terlebih dahulu.' }, { status: 401 })
     }
     
-    // Fetch the reimbursement
+    // Ambil data klaim
     const klaim = await payload.findByID({
       collection: 'reimbursements',
       id: id,
@@ -33,7 +33,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
       return NextResponse.json({ error: 'Klaim tidak ditemukan' }, { status: 404 })
     }
 
-    // Validate ownership
+    // Validasi kepemilikan klaim
     const isOwner = typeof klaim.requestedBy === 'object' 
       ? (klaim.requestedBy as any).id === user.id 
       : klaim.requestedBy === user.id
@@ -46,7 +46,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
       return NextResponse.json({ error: 'Klaim belum berstatus PAID' }, { status: 400 })
     }
 
-    // Prepare HTML content
+    // Siapkan konten HTML
     const formatRupiah = (angka: number) => {
       return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(angka)
     }
@@ -178,7 +178,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     </html>
     `
 
-    // Start Playwright
+    // Mulai proses Playwright
     const browser = await chromium.launch({ headless: true })
     const page = await browser.newPage()
     
@@ -193,7 +193,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
 
     await browser.close()
 
-    // Return the PDF
+    // Kembalikan file PDF
     return new NextResponse(pdfBuffer, {
       headers: {
         'Content-Type': 'application/pdf',
