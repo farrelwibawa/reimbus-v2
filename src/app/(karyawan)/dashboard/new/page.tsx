@@ -38,11 +38,6 @@ export default function TambahKlaimPage() {
     setError('')
     setSuccess('')
 
-    if (!file) {
-      setError('Harap unggah foto nota (receipt).')
-      setLoading(false)
-      return
-    }
 
     try {
       await submitNewClaim({
