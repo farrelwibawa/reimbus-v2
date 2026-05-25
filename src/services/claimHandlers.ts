@@ -115,3 +115,19 @@ export async function submitEditClaim(params: EditClaimParams) {
 
   return claimData
 }
+
+/**
+ * Menghapus data klaim reimbursement berdasarkan ID.
+ */
+export async function deleteClaim(id: string) {
+  const res = await fetch(`/api/reimbursements/${id}`, {
+    method: 'DELETE',
+  })
+
+  if (!res.ok) {
+    throw new Error('Gagal menghapus klaim')
+  }
+
+  return res.json()
+}
+

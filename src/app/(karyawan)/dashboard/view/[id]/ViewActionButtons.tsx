@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-
+import { deleteClaim } from '@/services/claimHandlers'
 export default function ViewActionButtons({ id, status }: { id: string, status: string }) {
   const router = useRouter()
   const [isDeleting, setIsDeleting] = useState(false)
@@ -17,13 +17,7 @@ export default function ViewActionButtons({ id, status }: { id: string, status: 
     
     setIsDeleting(true)
     try {
-      const res = await fetch(`/api/reimbursements/${id}`, {
-        method: 'DELETE',
-      })
-
-      if (!res.ok) {
-        throw new Error('Gagal menghapus klaim')
-      }
+      await deleteClaim(id)
 
       router.push('/dashboard')
       router.refresh()
