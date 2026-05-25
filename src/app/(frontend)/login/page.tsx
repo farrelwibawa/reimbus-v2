@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-
+import { loginEmployee } from '@/services/authHandlers'
 export default function UnifiedLoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -17,26 +17,10 @@ export default function UnifiedLoginPage() {
     setError('')
 
     try {
-      // Endpoint bawaan Payload CMS untuk login koleksi Employees
-      const res = await fetch('/api/employees/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      })
+      // Memanggil koki (service layer) untuk memproses login
+      const { role } = await loginEmployee(email, password)
 
-      const data = await res.json()
-
-      if (!res.ok) {
-        throw new Error(data.errors?.[0]?.message || 'Login gagal. Cek kembali email dan password.')
-      }
-
-      // Payload otomatis mengeset HTTP-Only Cookie untuk token.
-      // Kita tinggal arahkan rute berdasarkan role user yang didapat
-      const userRole = data.user.role
-
-      if (userRole === 'admin') {
+      if (role === 'admin') {
         // Menggunakan window.location.href agar halaman Admin CMS ter-load dari awal
         window.location.href = '/admin'
       } else {
