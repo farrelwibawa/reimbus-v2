@@ -1,5 +1,5 @@
 // Service Layer: Menangani pengajuan klaim dan upload media
-
+import { API_ENDPOINTS } from '@/constants/api'
 export interface NewClaimParams {
   file: File
   category: string
@@ -28,7 +28,7 @@ async function uploadMedia(file: File, altText: string) {
   formData.append('file', file)
   formData.append('_payload', JSON.stringify({ alt: altText }))
 
-  const mediaRes = await fetch('/api/media', {
+  const mediaRes = await fetch(API_ENDPOINTS.MEDIA, {
     method: 'POST',
     body: formData,
   })
@@ -56,7 +56,7 @@ export async function submitNewClaim(params: NewClaimParams) {
   const mediaId = await uploadMedia(file, `Claim Receipt - ${category}`)
 
   // Simpan data klaim beserta ID media yang terkait
-  const claimRes = await fetch('/api/reimbursements', {
+  const claimRes = await fetch(API_ENDPOINTS.REIMBURSEMENTS, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -93,7 +93,7 @@ export async function submitEditClaim(params: EditClaimParams) {
   }
 
   // Perbarui data klaim
-  const claimRes = await fetch(`/api/reimbursements/${klaimId}`, {
+  const claimRes = await fetch(`${API_ENDPOINTS.REIMBURSEMENTS}/${klaimId}`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
@@ -120,7 +120,7 @@ export async function submitEditClaim(params: EditClaimParams) {
  * Menghapus data klaim reimbursement berdasarkan ID.
  */
 export async function deleteClaim(id: string) {
-  const res = await fetch(`/api/reimbursements/${id}`, {
+  const res = await fetch(`${API_ENDPOINTS.REIMBURSEMENTS}/${id}`, {
     method: 'DELETE',
   })
 

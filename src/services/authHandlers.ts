@@ -1,3 +1,5 @@
+import { API_ENDPOINTS } from '@/constants/api'
+
 /**
  * Memproses autentikasi login karyawan ke API Payload CMS.
  * @param email Email pengguna
@@ -5,7 +7,7 @@
  * @returns Object berisi role dari user jika berhasil
  */
 export async function loginEmployee(email: string, password: string): Promise<{ role: string }> {
-  const res = await fetch('/api/employees/login', {
+  const res = await fetch(API_ENDPOINTS.LOGIN, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
