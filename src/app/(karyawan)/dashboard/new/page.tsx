@@ -1,9 +1,10 @@
 'use client'
 
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { submitNewClaim } from '@/services/claimHandlers'
+import { useMachine } from '@xstate/react'
+import { submitMachine } from '@/machines/submitMachine'
 import { categoryOptions } from '@/collections/fields/options'
 
 export default function TambahKlaimPage() {
@@ -15,11 +16,15 @@ export default function TambahKlaimPage() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-  const [success, setSuccess] = useState('')
-  
   const router = useRouter()
+  const [state, send] = useMachine(submitMachine)
+
+  useEffect(() => {
+    if (state.matches('redirecting')) {
+      router.push('/dashboard')
+      router.refresh()
+    }
+  }, [state.value, router])
 
   const formatAmount = (val: string) => {
     if (!val) return ''
@@ -32,33 +37,18 @@ export default function TambahKlaimPage() {
     setAmount(rawValue)
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    setLoading(true)
-    setError('')
-    setSuccess('')
-
-
-    try {
-      await submitNewClaim({
+    send({
+      type: 'SUBMIT_CLICKED',
+      data: {
         file,
         category,
         itemName,
         description,
-        amount: Number(amount),
-      })
-
-      setSuccess('Klaim berhasil diajukan! Mengalihkan ke dashboard...')
-      
-      setTimeout(() => {
-        router.push('/dashboard')
-        router.refresh()
-      }, 1500)
-
-    } catch (err: any) {
-      setError(err.message)
-      setLoading(false)
-    }
+        amount: Number(amount)
+      }
+    })
   }
 
   const inputClass = "px-4 py-3 bg-slate-950 border border-slate-700 rounded-lg text-slate-50 font-sans text-[15px] transition-all duration-300 focus:outline-none focus:border-blue-400 focus:ring-[3px] focus:ring-blue-500/20 shadow-inner w-full placeholder:text-slate-500"
@@ -72,8 +62,8 @@ export default function TambahKlaimPage() {
         </Link>
       </div>
 
-      {error && <div className="bg-red-500/10 text-red-400 px-4 py-3 rounded-lg border border-red-500/20 mb-6 text-sm">{error}</div>}
-      {success && <div className="bg-emerald-500/10 text-emerald-400 px-4 py-3 rounded-lg border border-emerald-500/20 mb-6 text-sm">{success}</div>}
+      {state.context.errorMessage && <div className="bg-red-500/10 text-red-400 px-4 py-3 rounded-lg border border-red-500/20 mb-6 text-sm">{state.context.errorMessage}</div>}
+      {state.context.successMessage && <div className="bg-emerald-500/10 text-emerald-400 px-4 py-3 rounded-lg border border-emerald-500/20 mb-6 text-sm">{state.context.successMessage}</div>}
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-5">
         <div className="flex flex-col gap-2">
@@ -186,10 +176,10 @@ export default function TambahKlaimPage() {
 
         <button 
           type="submit" 
-          disabled={loading || !!success} 
+          disabled={state.matches('submitting') || state.matches('success') || state.matches('redirecting')} 
           className="bg-gradient-to-r from-blue-600 to-blue-500 text-white p-3.5 border-none rounded-lg font-semibold text-[15px] cursor-pointer mt-2.5 transition-all duration-200 shadow-[0_4px_14px_rgba(59,130,246,0.39)] hover:-translate-y-[2px] hover:shadow-[0_6px_20px_rgba(59,130,246,0.5)] active:scale-95 active:shadow-none disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
         >
-          {loading ? 'Memproses pengajuan...' : 'Kirim Pengajuan Klaim'}
+          {state.matches('submitting') ? 'Memproses pengajuan...' : 'Kirim Pengajuan Klaim'}
         </button>
       </form>
     </div>

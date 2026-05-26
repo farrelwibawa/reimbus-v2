@@ -6,6 +6,7 @@
 
 export const API_ENDPOINTS = {
   LOGIN: '/api/employees/login',
+  LOGOUT: '/api/employees/logout',
   REIMBURSEMENTS: '/api/reimbursements',
   MEDIA: '/api/media',
 }

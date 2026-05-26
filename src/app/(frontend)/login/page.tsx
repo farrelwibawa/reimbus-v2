@@ -1,37 +1,30 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { loginEmployee } from '@/services/authHandlers'
+import { useMachine } from '@xstate/react'
+import { loginMachine } from '@/machines/loginMachine'
+
 export default function UnifiedLoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false)
   const router = useRouter()
+  const [state, send] = useMachine(loginMachine)
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-    setError('')
-
-    try {
-      // Memanggil koki (service layer) untuk memproses login
-      const { role } = await loginEmployee(email, password)
-
-      if (role === 'admin') {
-        // Menggunakan window.location.href agar halaman Admin CMS ter-load dari awal
+  useEffect(() => {
+    if (state.matches('success')) {
+      if (state.context.role === 'admin') {
         window.location.href = '/admin'
       } else {
-        // Menggunakan router Next.js untuk karyawan agar transisinya mulus (SPA)
         router.push('/dashboard')
       }
-    } catch (err: any) {
-      setError(err.message)
-    } finally {
-      setLoading(false)
     }
+  }, [state.value, state.context.role, router])
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault()
+    send({ type: 'SUBMIT', email, password })
   }
 
   const inputClass = "px-4 py-3 rounded-lg border border-slate-700 bg-slate-950 text-slate-50 text-[15px] outline-none transition-all duration-300 focus:border-blue-400 focus:ring-[3px] focus:ring-blue-500/20 shadow-inner placeholder:text-slate-500 w-full"
@@ -50,7 +43,7 @@ export default function UnifiedLoginPage() {
           <h1 className="m-0 mb-2.5 text-[28px] text-slate-50 text-center font-extrabold tracking-tight">Login ReimbuS</h1>
           <p className="m-0 mb-[30px] text-slate-400 text-sm text-center font-medium">Sistem Klaim Karyawan Terpadu</p>
 
-          {error && <div className="bg-red-500/10 text-red-400 border border-red-500/20 p-3 rounded-lg mb-5 text-sm text-center font-medium">{error}</div>}
+          {state.context.errorMessage && <div className="bg-red-500/10 text-red-400 border border-red-500/20 p-3 rounded-lg mb-5 text-sm text-center font-medium">{state.context.errorMessage}</div>}
 
           <form onSubmit={handleLogin} className="flex flex-col gap-5">
             <div className="flex flex-col gap-2">
@@ -79,10 +72,10 @@ export default function UnifiedLoginPage() {
 
             <button 
               type="submit" 
-              disabled={loading} 
+              disabled={state.matches('loading')} 
               className="bg-gradient-to-r from-blue-600 to-blue-500 text-white p-3.5 rounded-lg border-none text-[15px] font-semibold cursor-pointer transition-all duration-200 mt-2.5 hover:shadow-[0_6px_20px_rgba(59,130,246,0.5)] active:scale-95 disabled:bg-slate-700 disabled:from-slate-700 disabled:to-slate-700 disabled:cursor-not-allowed disabled:opacity-70 disabled:transform-none disabled:shadow-none"
             >
-              {loading ? 'Memeriksa otorisasi...' : 'Masuk'}
+              {state.matches('loading') ? 'Memeriksa otorisasi...' : 'Masuk'}
             </button>
           </form>
         </div>
